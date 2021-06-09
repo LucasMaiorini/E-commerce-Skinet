@@ -1,14 +1,13 @@
+using API.Extensions;
 using API.Helpers;
+using API.Middleware;
 using AutoMapper;
-using Core.Interfaces;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
 
 namespace API
 {
@@ -24,35 +23,37 @@ namespace API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped<IProductRepository, ProductRepository>();
-            //The way we add the Generic is differente because we don't know the type
-            services.AddScoped(typeof(IGenericRepository<>), (typeof(GenericRepository<>)));
             services.AddAutoMapper(typeof(MappingProfiles));
             services.AddControllers();
-            services.AddDbContext<StoreContext>(context => context.UseSqlite(Configuration.GetConnectionString("DefaultConnection"))
-            );
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
-            });
+            services.AddDbContext<StoreContext>(context => context.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
+
+            // Using the services applications present in ApplicationServicesExtensions.cs
+            services.AddApplicationServices();
+            // Using the services applications present in SwaggerServiceExtensions.cs
+            services.AddSwaggerDocumentation();
+
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        /// <summary>
+        /// This method gets called by runtime. Use this method to configure the HTTP request pipeline.
+        /// The order is important.
+        /// </summary>
+        /// <param name="app"></param>
+        /// <param name="env"></param>
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1"));
-            }
+            //Uses the ExceptionMiddleware to call a custom error when an Exception occurs.
+            app.UseMiddleware<ExceptionMiddleware>();
 
+            //The method below allows the application to reach an error page even when the endpoint doesn't exist.
+            //The placeholder {0} represents the StatusCode
+            app.UseStatusCodePagesWithReExecute("/errors/{0}");
             app.UseHttpsRedirection();
 
             app.UseRouting();
             app.UseStaticFiles();
-
             app.UseAuthorization();
+            app.UseSwaggerDocumentation();
 
             app.UseEndpoints(endpoints =>
             {
