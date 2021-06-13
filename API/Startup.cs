@@ -31,6 +31,11 @@ namespace API
             services.AddApplicationServices();
             // Using the services applications present in SwaggerServiceExtensions.cs
             services.AddSwaggerDocumentation();
+            // To use CORS
+            services.AddCors(option => option.AddPolicy("CorsPolicy", policy =>
+            {
+                policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200");
+            }));
 
         }
 
@@ -52,6 +57,9 @@ namespace API
 
             app.UseRouting();
             app.UseStaticFiles();
+
+            //To use CORS
+            app.UseCors("CorsPolicy");
             app.UseAuthorization();
             app.UseSwaggerDocumentation();
 

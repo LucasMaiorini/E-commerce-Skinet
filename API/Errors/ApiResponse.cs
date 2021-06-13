@@ -1,5 +1,3 @@
-using System;
-
 namespace API.Errors
 {
     public class ApiResponse
@@ -22,7 +20,7 @@ namespace API.Errors
                 400 => "A bad request issue :(",
                 401 => "An authorization issue :(",
                 404 => "A not found resource issue :(",
-                500 => "An internal server error issua :(",
+                500 => "An internal server error issue :(",
                 _ => null
             };
         }

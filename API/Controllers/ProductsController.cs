@@ -9,6 +9,7 @@ using System.Linq;
 using AutoMapper;
 using API.Errors;
 using Microsoft.AspNetCore.Http;
+using API.Helpers;
 
 namespace API.Controllers
 {
@@ -31,15 +32,32 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IReadOnlyList<ProductToReturnDto>>> GetProducts()
+        /// <summary>
+        /// Assynchronously sets the Specifications and brings a list of products according to it.
+        /// </summary>
+        /// <param name="productParam">A class with properties,as sort and filters , to configure our query</param>
+        /// <returns>List of products</returns>
+        public async Task<ActionResult<Pagination<ProductToReturnDto>>> GetProducts(
+            //FromQuery is necessary to inform the API that the parameters will be passed by Query String.
+            //It would work properly without it if instead pass a class in GetProducts arguments, we pass the argmuments individually 
+            [FromQuery] ProductSpecParams productParams
+            )
         {
-            var spec = new ProductsWithTypesAndBrandsSpecification();
+            var spec = new ProductsWithTypesAndBrandsSpecification(productParams);
+
+            var countSpec = new ProducWithFiltersForCountSpecification(productParams);
+
+            var totalItems = await _productsRepo.CountAsync(countSpec);
+
             var products = await _productsRepo.ListAsync(spec);
-            return Ok(this._mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductToReturnDto>>(products));
+
+            var data = this._mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductToReturnDto>>(products);
+
+            return Ok(new Pagination<ProductToReturnDto>(productParams.PageIndex, productParams.PageSize, totalItems, data));
         }
 
         [HttpGet("{id}")]
-        //This attributes are useful to indicate what kind of return each method has.
+        //These attributes are useful to indicate what kind of return each method has.
         //It also improves Swagger documentation.
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
@@ -47,9 +65,10 @@ namespace API.Controllers
         {
             var spec = new ProductsWithTypesAndBrandsSpecification(id);
 
+            //GetEntityWithSpec is a Query
             Product product = await this._productsRepo.GetEntityWithSpec(spec);
 
-            if (product == null) return NotFound( new ApiResponse(404));
+            if (product == null) return NotFound(new ApiResponse(404));
             //makes the automapper between the two entities.
             return this._mapper.Map<Product, ProductToReturnDto>(product);
         }

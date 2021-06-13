@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Reflection;
 using Core.Models;
 using Microsoft.EntityFrameworkCore;
@@ -19,6 +20,24 @@ namespace Infrastructure.Data
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+
+            //The code returns some errors in Sqlite because the DataBase cannot order by decimal.
+            //Here we convert the decimal to double.
+            if (Database.ProviderName == "Microsoft.EntityFrameworkCore.Sqlite")
+            {
+                foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+                {
+                    var properties = entityType.ClrType.GetProperties().Where(p => p.PropertyType == typeof(decimal));
+                    foreach (var property in properties)
+                    {
+                        modelBuilder.Entity(entityType.Name).Property(property.Name).HasConversion<double>();
+                    }
+
+                }
+                {
+
+                }
+            }
         }
 
     }
