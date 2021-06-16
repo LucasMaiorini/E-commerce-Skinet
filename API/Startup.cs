@@ -32,10 +32,13 @@ namespace API
             // Using the services applications present in SwaggerServiceExtensions.cs
             services.AddSwaggerDocumentation();
             // To use CORS
-            services.AddCors(option => option.AddPolicy("CorsPolicy", policy =>
+            services.AddCors(opt =>
             {
-                policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200");
-            }));
+                opt.AddPolicy("CorsPolicy", policy =>
+               {
+                   policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200");
+               });
+            });
 
         }
 
@@ -50,6 +53,7 @@ namespace API
             //Uses the ExceptionMiddleware to call a custom error when an Exception occurs.
             app.UseMiddleware<ExceptionMiddleware>();
 
+            app.UseSwaggerDocumentation();
             //The method below allows the application to reach an error page even when the endpoint doesn't exist.
             //The placeholder {0} represents the StatusCode
             app.UseStatusCodePagesWithReExecute("/errors/{0}");
@@ -61,7 +65,6 @@ namespace API
             //To use CORS
             app.UseCors("CorsPolicy");
             app.UseAuthorization();
-            app.UseSwaggerDocumentation();
 
             app.UseEndpoints(endpoints =>
             {
