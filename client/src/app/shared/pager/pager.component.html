@@ -1,0 +1,5 @@
+ <!-- pageChanged is a method from pagination Component -->
+ <pagination [boundaryLinks]="true" [totalItems]="this.totalCount" [itemsPerPage]="this.pageSize"
+ (pageChanged)="onPageChanged($event)" previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;"
+ lastText="&raquo;" *ngIf="this.totalCount > 0">
+</pagination>

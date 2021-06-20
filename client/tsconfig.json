@@ -18,6 +18,8 @@
     ]
   },
   "angularCompilerOptions": {
-    "enableI18nLegacyMessageIdFormat": false
+    "enableI18nLegacyMessageIdFormat": false,
+    // This config. allows the passage of $event.target.value to a function.
+    "strictDomEventTypes": false,
   }
 }

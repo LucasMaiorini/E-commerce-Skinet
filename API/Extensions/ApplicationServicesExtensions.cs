@@ -10,7 +10,7 @@ namespace API.Extensions
     public static class ApplicationServicesExtensions
     {
         /// <summary>
-        /// We are extending the ServiceCollection and configuring its values.
+        /// We are injecting ServiceCollection and configuring its values.
         /// In this way we keep the Startup.cs clean.
         /// </summary>
         /// <param name="services"></param>
