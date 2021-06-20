@@ -1,4 +1,4 @@
-.cart-no{
+.cart-no {
   position: absolute;
   min-height: 25px;
   min-width: 25px;
@@ -9,4 +9,42 @@
   text-align: center;
   top: -12px;
   right: 32px;
+}
+
+a {
+  color: grayscale($color: #8b8b8b);
+  font-weight: 400;
+  text-decoration: none;
+  // &.active {
+  //   text-decoration: overline;
+  // }
+}
+
+.tabs{
+}
+.tab{
+
+}
+.p-2{
+  position: relative;
+}
+.p-2::after{
+  content: '';
+  position: absolute;
+  height: 2px;
+  width: 80%;
+  margin: auto;
+  left: 0;
+  right: 0;
+  background-color: #dee2e6;
+  transform: scaleX(0);
+  transition: 0.2s;
+
+  opacity: 0;
+}
+
+.p-2.active::after{
+  opacity: 1;
+  transition-delay: 0.2s;
+  transform: scaleX(1);
 }

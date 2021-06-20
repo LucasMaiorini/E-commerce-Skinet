@@ -10,6 +10,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { CoreModule } from './core/core.module';
 import { ShopModule } from './shop/shop.module';
 import { SharedModule } from './shared/shared.module';
+import { HomeModule } from './home/home.module';
 
 @NgModule({
   declarations: [
@@ -17,13 +18,9 @@ import { SharedModule } from './shared/shared.module';
   ],
   imports: [
     BrowserModule,
-    // Import to use the components in Core.
     CoreModule,
-    // Import to use the components in Shop.
-    ShopModule,
-    // Import to use the components in shared
+    HomeModule,
     SharedModule,
-    // Import to use Routing.
     AppRoutingModule,
     // Some Ngx-Bootstrap elements need BrowserAnimationModule to work properly.
     BrowserAnimationsModule,
