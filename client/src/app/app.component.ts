@@ -1,7 +1,4 @@
-import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
-import { IPagination } from './shared/models/pagination';
-import { IProduct } from './shared/models/product';
+import { Component, isDevMode, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-root',
@@ -14,5 +11,9 @@ export class AppComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    if (isDevMode()) {
+      console.log('Development');
+    } else { console.log('Production') }
+  }
 }

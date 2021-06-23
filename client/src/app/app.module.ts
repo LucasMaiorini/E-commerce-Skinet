@@ -6,11 +6,12 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
 import { ButtonsModule } from 'ngx-bootstrap/buttons';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { CoreModule } from './core/core.module';
 import { ShopModule } from './shop/shop.module';
 import { SharedModule } from './shared/shared.module';
 import { HomeModule } from './home/home.module';
+import { ErrorInterceptor } from './core/interceptors/error.interceptor';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,12 @@ import { HomeModule } from './home/home.module';
     // Necessary to use buttons from Ngx-Bootstrap.
     ButtonsModule.forRoot()
   ],
-  providers: [],
+  providers: [
+    // HTTP_INTERCEPTORS for use interceptors in the project. Interceptors belongs to core module.
+    // Interceptors allows to take http errors and redirect the user to some error page, for example.
+    // It is also able to generate an encrypted token as the user log in the system.
+    {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true}
+  ],
   // Apply bootstrap in our AppComponent
   bootstrap: [AppComponent]
 })
