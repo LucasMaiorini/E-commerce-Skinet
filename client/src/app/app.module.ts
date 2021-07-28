@@ -8,10 +8,11 @@ import { AppComponent } from './app.component';
 import { ButtonsModule } from 'ngx-bootstrap/buttons';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { CoreModule } from './core/core.module';
-import { ShopModule } from './shop/shop.module';
 import { SharedModule } from './shared/shared.module';
 import { HomeModule } from './home/home.module';
 import { ErrorInterceptor } from './core/interceptors/error.interceptor';
+import { NgxSpinnerModule } from 'ngx-spinner';
+import { LoadingInterceptor } from './core/interceptors/loading.interceptor';
 
 @NgModule({
   declarations: [
@@ -28,13 +29,16 @@ import { ErrorInterceptor } from './core/interceptors/error.interceptor';
     // HttpClientModule - Necessary to make usage of API.
     HttpClientModule,
     // Necessary to use buttons from Ngx-Bootstrap.
-    ButtonsModule.forRoot()
+    ButtonsModule.forRoot(),
+    NgxSpinnerModule,
   ],
   providers: [
     // HTTP_INTERCEPTORS for use interceptors in the project. Interceptors belongs to core module.
     // Interceptors allows to take http errors and redirect the user to some error page, for example.
     // It is also able to generate an encrypted token as the user log in the system.
-    {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true}
+    {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
+    {provide: HTTP_INTERCEPTORS, useClass: LoadingInterceptor, multi: true},
+
   ],
   // Apply bootstrap in our AppComponent
   bootstrap: [AppComponent]

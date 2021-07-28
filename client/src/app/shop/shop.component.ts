@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { IProduct } from '../shared/models/product';
 import { IProductBrand } from '../shared/models/productBrand';
 import { IProductType } from '../shared/models/productType';
@@ -13,7 +13,7 @@ import { ShopService } from './shop.service';
 export class ShopComponent implements OnInit {
   // The default behavior since Angular 9 is static:false
   // but as the search field it's part of the template that will always be available, it's set to true.
-  @ViewChild('search', { static: true }) searchTerm: ElementRef;
+  @ViewChild('search', { static: false }) searchTerm: ElementRef;
   // Array of products that will be displayed in component.
   products: IProduct[];
   // Array of brands that will be displayed in left section.
@@ -106,4 +106,5 @@ export class ShopComponent implements OnInit {
     this.shopParams = new ShopParams();
     this.getProducts();
   }
+
 }

@@ -8,7 +8,8 @@ import { ProductDetailsComponent } from './product-details/product-details.compo
 const routes: Routes = [
   // '' is the root component for shop.module
   { path: '', component: ShopComponent },
-  { path: ':id', component: ProductDetailsComponent },
+  // To define how the breadCrumbs will looks like it's defined an alias that is configured in product-details.component.ts
+  { path: ':id', component: ProductDetailsComponent, data: { breadcrumb: { alias: 'productDetails' } } },
 ]
 
 

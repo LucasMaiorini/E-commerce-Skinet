@@ -1,17 +1,12 @@
 import { Injectable } from '@angular/core';
-import {
-  HttpRequest,
-  HttpHandler,
-  HttpEvent,
-  HttpInterceptor
-} from '@angular/common/http';
+import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { NavigationExtras, Router } from '@angular/router';
-import { catchError } from 'rxjs/operators';
+import { catchError, delay } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 
 @Injectable()
-// This intercepts the httpRequest
+// Intercepts the httpRequest
 // 'next' is the http response which is coming back
 // If we catch any errors we will be able to do something with it
 export class ErrorInterceptor implements HttpInterceptor {
@@ -40,7 +35,7 @@ export class ErrorInterceptor implements HttpInterceptor {
           }
           if (error.status === 500) {
             // Creates an object called error and set to it the object error generated as response of this very method (our method).
-            const navigationExtras: NavigationExtras = { state: {error: error.error}};
+            const navigationExtras: NavigationExtras = { state: { error: error.error } };
             this.router.navigateByUrl('/server-error', navigationExtras);
           }
         }
