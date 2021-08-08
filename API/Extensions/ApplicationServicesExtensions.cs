@@ -19,6 +19,7 @@ namespace API.Extensions
         {
             //The AddScoped is related with the lifetime of the service. Scoped litefime services are created once per request.
             services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<IBasketRepository, BasketRepository>();
             //The way we add the Generic is different because we don't know the type
             services.AddScoped(typeof(IGenericRepository<>), (typeof(GenericRepository<>)));
 
