@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using API.Extensions;
 using API.Helpers;
 using API.Middleware;
@@ -25,7 +26,8 @@ namespace API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddAutoMapper(typeof(MappingProfiles));
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+            
             services.AddDbContext<StoreContext>(context => context.UseSqlite(_config.GetConnectionString("DefaultConnection")));
 
             // Redis is used in our basket

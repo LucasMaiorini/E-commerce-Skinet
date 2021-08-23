@@ -1,6 +1,7 @@
 using System;
 using System.Net;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using API.Errors;
 using Microsoft.AspNetCore.Http;
@@ -24,9 +25,9 @@ namespace API.Middleware
         /// <param name="env"> Checks if is Development environment or not</param>
         public ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger, IHostEnvironment env)
         {
-            this._next = next;
-            this._logger = logger;
             this._env = env;
+            this._logger = logger;
+            this._next = next;
         }
 
         public async Task InvokeAsync(HttpContext context)
@@ -49,7 +50,12 @@ namespace API.Middleware
                 ? new ApiException((int)HttpStatusCode.InternalServerError, ex.Message, ex.StackTrace.ToString())
                 : new ApiException((int)HttpStatusCode.InternalServerError);
 
-                var options = new JsonSerializerOptions{PropertyNamingPolicy = JsonNamingPolicy.CamelCase};
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                    ReferenceHandler = ReferenceHandler.Preserve
+                };
+
                 //Converts the response in Json, cause we defined that our context Response must be json formatted.
                 var json = JsonSerializer.Serialize(response, options);
 

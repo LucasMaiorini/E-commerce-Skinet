@@ -37,6 +37,7 @@ namespace Infrastructure.Data
             //In this particular example we are storing the data in memory for 30 days.
             // We just set a serialized string into our Redis database.
             var created = await _database.StringSetAsync(basket.Id, JsonSerializer.Serialize(basket), TimeSpan.FromDays(30));
+
             if (!created) return null;
 
             return await GetBasketAsync(basket.Id);
